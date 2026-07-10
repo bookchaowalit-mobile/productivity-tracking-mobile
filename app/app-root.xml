@@ -1,0 +1,27 @@
+<TabView>
+    <TabView.items>
+        <TabViewItem title="Home">
+            <TabViewItem.view>
+                <StackLayout class="p-20">
+                    <Label text="Tracking" class="text-2xl font-bold text-center" />
+                    <Label text="Tracking — Mobile app (nativescript)" class="text-center m-t-10" textWrap="true" />
+                </StackLayout>
+            </TabViewItem.view>
+        </TabViewItem>
+        <TabViewItem title="Explore">
+            <TabViewItem.view>
+                <StackLayout class="p-20">
+                    <Label text="Explore Tracking" class="text-center" />
+                </StackLayout>
+            </TabViewItem.view>
+        </TabViewItem>
+        <TabViewItem title="Profile">
+            <TabViewItem.view>
+                <StackLayout class="p-20">
+                    <Label text="Chaowalit Greepoke" class="text-xl font-bold text-center" />
+                    <Label text="bookchaowalit.com" class="text-center" />
+                </StackLayout>
+            </TabViewItem.view>
+        </TabViewItem>
+    </TabView.items>
+</TabView>
