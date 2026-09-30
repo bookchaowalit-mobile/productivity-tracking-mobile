@@ -48,3 +48,15 @@ Score: 6/10 (was 5/10) — category filter and a lint gate; App_Resources / nati
 - Lint: ESLint 9 + typescript-eslint flat config (`eslint.config.mjs`, since `.gitignore` ignores `*.js`); `npm run lint` added to `validate` and to CI before typecheck.
 - Not device-verified: no NativeScript runtime/Android SDK here; the XML binding compiles in the webpack bundle only.
 - Verified: lint, typecheck, vitest (15), `npm run bundle:android` (webpack compiled successfully).
+
+## Done in this pass (pass 3)
+
+Score: 6.5/10 (was 6/10) — edge-case hunt in `app/lib/tracker.ts`.
+
+- Bug: progress rounded up to "(100%)" at 199/200 episodes, and the Stats line said "100% finished,
+  not dropped" with one item dropped out of 200. New `percent()` only returns 100 when part == whole.
+- Bug: invisible-only titles (U+200B/U+2060) were accepted; the 120-character limit counted UTF-16
+  units (60 emoji were "too long").
+- Bug: stored items with negative progress/total or ratings outside 0–5 (or fractional) were loaded
+  and rendered as-is; `parseItems` now drops them.
+- Verified: lint, typecheck, vitest (19), `npm run bundle:android` (webpack); new tests fail on the old code.

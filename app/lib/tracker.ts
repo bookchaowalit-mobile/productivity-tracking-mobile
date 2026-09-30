@@ -45,13 +45,27 @@ export function newId(now = Date.now(), random = Math.random): string {
   return `${now.toString(36)}${random().toString(36).slice(2, 7)}`;
 }
 
+/** Zero-width characters and BOM, which `trim()` keeps but nobody can see. */
+const INVISIBLE = /[\u200B-\u200D\u2060\uFEFF]/g;
+
+/**
+ * Whole-number percentage that only reads 100% when the part really equals
+ * the whole (199/200 is 99%, not a rounded-up 100%).
+ */
+export function percent(part: number, whole: number): number {
+  if (whole <= 0) return 0;
+  if (part >= whole) return 100;
+  return Math.min(99, Math.round((part / whole) * 100));
+}
+
 export type NewItemInput = { title: string; category: string; total?: string };
 
 /** Validate and build a new item; returns an error message instead when invalid. */
 export function createItem(input: NewItemInput, now = Date.now(), id = newId(now)): Item | string {
   const title = input.title.trim();
-  if (!title) return 'Title is required.';
-  if (title.length > 120) return 'Title is too long (max 120 characters).';
+  if (!title.replace(INVISIBLE, '').trim()) return 'Title is required.';
+  // Code points, so a title with emoji is measured the way the user sees it.
+  if ([...title].length > 120) return 'Title is too long (max 120 characters).';
   if (!CATEGORY_IDS.includes(input.category)) return 'Pick a category.';
   const totalText = (input.total ?? '').trim();
   if (totalText && !/^\d{1,5}$/.test(totalText)) return 'Length must be a whole number (or blank if unknown).';
@@ -95,7 +109,7 @@ export function setRating(item: Item, rating: number, now = Date.now()): Item {
 export function progressLabel(item: Item): string {
   const unit = unitFor(item.category);
   if (item.total > 0) {
-    const pct = Math.round((Math.min(item.progress, item.total) / item.total) * 100);
+    const pct = percent(item.progress, item.total);
     return `${item.progress} / ${item.total} ${unit} (${pct}%)`;
   }
   return `${item.progress} ${unit}`;
@@ -133,7 +147,7 @@ export function stats(items: Item[]): Stats {
     byStatus,
     byCategory: CATEGORIES.map((c) => ({ id: c.id, label: c.label, count: items.filter((i) => i.category === c.id).length })),
     averageRating: rated.length ? Math.round((rated.reduce((s, i) => s + i.rating, 0) / rated.length) * 10) / 10 : null,
-    completionRate: finished ? Math.round((byStatus.completed / finished) * 100) : null,
+    completionRate: finished ? percent(byStatus.completed, finished) : null,
   };
 }
 
@@ -145,7 +159,12 @@ function isItem(v: unknown): v is Item {
     typeof o.title === 'string' &&
     CATEGORY_IDS.includes(o.category as string) &&
     STATUS_IDS.includes(o.status as string) &&
-    [o.progress, o.total, o.rating, o.updatedAt].every((n) => typeof n === 'number' && Number.isFinite(n))
+    [o.progress, o.total, o.rating, o.updatedAt].every((n) => typeof n === 'number' && Number.isFinite(n)) &&
+    (o.progress as number) >= 0 &&
+    (o.total as number) >= 0 &&
+    Number.isInteger(o.rating) &&
+    (o.rating as number) >= 0 &&
+    (o.rating as number) <= 5
   );
 }
 

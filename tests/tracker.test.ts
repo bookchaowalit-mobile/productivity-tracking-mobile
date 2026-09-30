@@ -3,6 +3,7 @@ import {
   bumpProgress,
   createItem,
   parseItems,
+  percent,
   progressLabel,
   setRating,
   setStatus,
@@ -99,5 +100,30 @@ describe('parseItems', () => {
     expect(parseItems('{oops')).toEqual([]);
     const good = item();
     expect(parseItems(JSON.stringify([good, { ...good, category: 'tv' }, { id: 1 }]))).toEqual([good]);
+  });
+});
+
+describe('pass 3 edge cases', () => {
+  const base: Item = {
+    id: 'a', title: 'Show', category: 'anime', status: 'in-progress', progress: 0, total: 0, rating: 0, updatedAt: 0,
+  };
+  it('never shows 100% before the last episode', () => {
+    expect(percent(199, 200)).toBe(99);
+    expect(percent(200, 200)).toBe(100);
+    expect(percent(1, 300)).toBe(0);
+    expect(progressLabel({ ...base, progress: 199, total: 200 })).toBe('199 / 200 episodes (99%)');
+  });
+  it('does not report 100% finished when something was dropped', () => {
+    const items: Item[] = Array.from({ length: 200 }, (_, n) => ({ ...base, id: String(n), status: 'completed' }));
+    items[0] = { ...items[0], status: 'dropped' };
+    expect(stats(items).completionRate).toBe(99);
+  });
+  it('rejects invisible-only titles and counts emoji titles by character', () => {
+    expect(createItem({ title: '\u200B\u2060', category: 'anime' }, 1, 'x')).toBe('Title is required.');
+    expect(typeof createItem({ title: '🎬'.repeat(100), category: 'movie' }, 1, 'x')).toBe('object');
+  });
+  it('drops stored items with negative counts or out-of-range ratings', () => {
+    const json = JSON.stringify([base, { ...base, id: 'b', progress: -3 }, { ...base, id: 'c', rating: 9 }, { ...base, id: 'd', rating: 2.5 }]);
+    expect(parseItems(json).map((i) => i.id)).toEqual(['a']);
   });
 });
