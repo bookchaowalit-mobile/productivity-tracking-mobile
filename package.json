@@ -6,7 +6,11 @@
   "scripts": {
     "android": "ns run android",
     "ios": "ns run ios",
-    "clean": "ns clean"
+    "clean": "ns clean",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "bundle:android": "webpack --config webpack.config.js --env android --env production",
+    "validate": "npm run typecheck && npm test"
   },
   "dependencies": {
     "@nativescript/core": "~8.8.0",
@@ -14,6 +18,7 @@
   },
   "devDependencies": {
     "@nativescript/webpack": "~5.0.0",
-    "typescript": "~5.5.0"
+    "typescript": "~5.5.0",
+    "vitest": "^3.2.4"
   }
 }

@@ -1,18 +1,42 @@
-<TabView>
+<TabView loaded="onLoaded">
     <TabView.items>
-        <TabViewItem title="Home">
+        <TabViewItem title="Library">
             <TabViewItem.view>
-                <StackLayout class="p-20">
-                    <Label text="Tracking" class="text-2xl font-bold text-center" />
-                    <Label text="Tracking — Mobile app (nativescript)" class="text-center m-t-10" textWrap="true" />
-                </StackLayout>
+                <GridLayout rows="auto, auto, auto, *, auto">
+                    <SearchBar row="0" hint="Search titles" text="{{ query }}" />
+                    <SegmentedBar row="1" selectedIndex="{{ statusIndex }}" class="m-x-10">
+                        <SegmentedBar.items>
+                            <SegmentedBarItem title="All" />
+                            <SegmentedBarItem title="Doing" />
+                            <SegmentedBarItem title="Planned" />
+                            <SegmentedBarItem title="Done" />
+                            <SegmentedBarItem title="Dropped" />
+                        </SegmentedBar.items>
+                    </SegmentedBar>
+                    <Label row="2" text="{{ emptyText }}" visibility="{{ emptyText ? 'visible' : 'collapsed' }}" class="text-center p-20" textWrap="true" />
+                    <ListView row="3" items="{{ rows }}" itemTap="{{ onItemTap }}">
+                        <ListView.itemTemplate>
+                            <StackLayout class="p-10">
+                                <Label text="{{ title }}" class="font-weight-bold" textWrap="true" />
+                                <Label text="{{ subtitle }}" class="text-muted" textWrap="true" />
+                            </StackLayout>
+                        </ListView.itemTemplate>
+                    </ListView>
+                    <Button row="4" text="Add item" tap="{{ onAdd }}" class="-primary m-10" />
+                </GridLayout>
             </TabViewItem.view>
         </TabViewItem>
-        <TabViewItem title="Explore">
+        <TabViewItem title="Stats">
             <TabViewItem.view>
-                <StackLayout class="p-20">
-                    <Label text="Explore Tracking" class="text-center" />
-                </StackLayout>
+                <ScrollView>
+                    <StackLayout class="p-20">
+                        <Label text="{{ summary }}" class="text-lg font-weight-bold" textWrap="true" />
+                        <Label text="By status" class="m-t-20 font-weight-bold" />
+                        <Label text="{{ statusLines }}" textWrap="true" />
+                        <Label text="By category" class="m-t-20 font-weight-bold" />
+                        <Label text="{{ categoryLines }}" textWrap="true" />
+                    </StackLayout>
+                </ScrollView>
             </TabViewItem.view>
         </TabViewItem>
         <TabViewItem title="Profile">
