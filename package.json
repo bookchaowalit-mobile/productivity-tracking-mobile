@@ -8,17 +8,21 @@
     "ios": "ns run ios",
     "clean": "ns clean",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint app tests nativescript.config.ts",
     "test": "vitest run",
     "bundle:android": "webpack --config webpack.config.js --env android --env production",
-    "validate": "npm run typecheck && npm test"
+    "validate": "npm run lint && npm run typecheck && npm test"
   },
   "dependencies": {
     "@nativescript/core": "~8.8.0",
     "@nativescript/theme": "~3.0.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@nativescript/webpack": "~5.0.0",
+    "eslint": "^9.39.5",
     "typescript": "~5.5.0",
+    "typescript-eslint": "^8.71.0",
     "vitest": "^3.2.4"
   }
 }

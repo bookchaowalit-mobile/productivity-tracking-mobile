@@ -2,8 +2,10 @@ import { ApplicationSettings, Dialogs, ItemEventData, Observable, ObservableArra
 import {
   CATEGORIES,
   STATUSES,
+  CATEGORY_FILTER_LABELS,
   bumpProgress,
   createItem,
+  filterFromIndexes,
   parseItems,
   progressLabel,
   setRating,
@@ -11,12 +13,9 @@ import {
   stats,
   visibleItems,
   type Item,
-  type Status,
 } from './lib/tracker';
 
 const STORAGE_KEY = 'trackit.items.v1';
-const STATUS_FILTERS: (Status | 'all')[] = ['all', ...STATUSES.map((s) => s.id)];
-
 type Row = { id: string; title: string; subtitle: string };
 
 function labelOf<T extends { id: string; label: string }>(list: readonly T[], id: string): string {
@@ -28,6 +27,8 @@ export class TrackerViewModel extends Observable {
   readonly rows = new ObservableArray<Row>();
   query = '';
   statusIndex = 0;
+  categoryIndex = 0;
+  readonly categoryFilters = CATEGORY_FILTER_LABELS.map((title) => ({ title }));
   emptyText = '';
   summary = '';
   statusLines = '';
@@ -37,7 +38,7 @@ export class TrackerViewModel extends Observable {
     super();
     this.on(Observable.propertyChangeEvent, (data) => {
       const e = data as PropertyChangeData;
-      if (e.propertyName === 'query' || e.propertyName === 'statusIndex') this.refresh();
+      if (e.propertyName === 'query' || e.propertyName === 'statusIndex' || e.propertyName === 'categoryIndex') this.refresh();
     });
     this.refresh();
   }
@@ -53,7 +54,8 @@ export class TrackerViewModel extends Observable {
   }
 
   private visible(): Item[] {
-    return visibleItems(this.items, { query: this.query, status: STATUS_FILTERS[this.statusIndex] ?? 'all' });
+    return visibleItems(this.items, filterFromIndexes(this.statusIndex, this.categoryIndex, this.query));
+
   }
 
   refresh() {

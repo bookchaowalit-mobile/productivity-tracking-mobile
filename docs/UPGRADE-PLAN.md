@@ -21,11 +21,9 @@
 ### P1
 - Dedicated add/edit page (form with category picker) instead of chained
   dialogs; inline +1 button on each row.
-- Category filter chips on the Library tab (logic already supports it).
 - Sync with tracking-frontend's `/api/tracking` once auth is decided.
 
 ### P2
-- Lint (ESLint + typescript-eslint) for `app/`.
 - Export/import JSON backup.
 
 ## Done in this pass
@@ -41,3 +39,12 @@
   scripts and a committed `package-lock.json`.
 - CI runs `npm ci`, typecheck, tests and the NativeScript webpack bundle with
   no failure masking.
+
+## Done in this pass (pass 2)
+
+Score: 6/10 (was 5/10) — category filter and a lint gate; App_Resources / native build (P0) still need the Android SDK.
+
+- Library tab: a category segmented bar (All + 6 categories, horizontally scrollable) next to the status bar; indexes map to a filter through pure, tested `filterFromIndexes` (replaces the ad-hoc status mapping in the view model). Segmented bars and the Add button have accessibility labels.
+- Lint: ESLint 9 + typescript-eslint flat config (`eslint.config.mjs`, since `.gitignore` ignores `*.js`); `npm run lint` added to `validate` and to CI before typecheck.
+- Not device-verified: no NativeScript runtime/Android SDK here; the XML binding compiles in the webpack bundle only.
+- Verified: lint, typecheck, vitest (15), `npm run bundle:android` (webpack compiled successfully).

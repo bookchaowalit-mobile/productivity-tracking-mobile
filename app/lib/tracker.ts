@@ -159,3 +159,16 @@ export function parseItems(json: string | undefined | null): Item[] {
     return [];
   }
 }
+
+/** Segmented-bar options: index 0 is "All", then STATUSES / CATEGORIES in order. */
+export const STATUS_FILTER_LABELS = ['All', 'Doing', 'Planned', 'Done', 'Dropped'] as const;
+export const CATEGORY_FILTER_LABELS = ['All', ...CATEGORIES.map((c) => c.label)];
+
+/** Maps the Library tab's segmented-bar indexes (+ search text) to a Filter; out-of-range means "all". */
+export function filterFromIndexes(statusIndex: number, categoryIndex: number, query = ''): Filter {
+  return {
+    status: statusIndex > 0 ? (STATUSES[statusIndex - 1]?.id ?? 'all') : 'all',
+    category: categoryIndex > 0 ? (CATEGORIES[categoryIndex - 1]?.id ?? 'all') : 'all',
+    query,
+  };
+}

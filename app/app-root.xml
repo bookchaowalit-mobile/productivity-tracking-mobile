@@ -2,9 +2,10 @@
     <TabView.items>
         <TabViewItem title="Library">
             <TabViewItem.view>
-                <GridLayout rows="auto, auto, auto, *, auto">
+                <GridLayout rows="auto, auto, auto, auto, *, auto">
                     <SearchBar row="0" hint="Search titles" text="{{ query }}" />
-                    <SegmentedBar row="1" selectedIndex="{{ statusIndex }}" class="m-x-10">
+                    <SegmentedBar row="1" selectedIndex="{{ statusIndex }}" class="m-x-10" accessibilityLabel="Filter by status">
+
                         <SegmentedBar.items>
                             <SegmentedBarItem title="All" />
                             <SegmentedBarItem title="Doing" />
@@ -13,8 +14,11 @@
                             <SegmentedBarItem title="Dropped" />
                         </SegmentedBar.items>
                     </SegmentedBar>
-                    <Label row="2" text="{{ emptyText }}" visibility="{{ emptyText ? 'visible' : 'collapsed' }}" class="text-center p-20" textWrap="true" />
-                    <ListView row="3" items="{{ rows }}" itemTap="{{ onItemTap }}">
+                    <ScrollView row="2" orientation="horizontal" class="m-x-10 m-t-5">
+                        <SegmentedBar selectedIndex="{{ categoryIndex }}" items="{{ categoryFilters }}" accessibilityLabel="Filter by category" />
+                    </ScrollView>
+                    <Label row="3" text="{{ emptyText }}" visibility="{{ emptyText ? 'visible' : 'collapsed' }}" class="text-center p-20" textWrap="true" />
+                    <ListView row="4" items="{{ rows }}" itemTap="{{ onItemTap }}">
                         <ListView.itemTemplate>
                             <StackLayout class="p-10">
                                 <Label text="{{ title }}" class="font-weight-bold" textWrap="true" />
@@ -22,7 +26,7 @@
                             </StackLayout>
                         </ListView.itemTemplate>
                     </ListView>
-                    <Button row="4" text="Add item" tap="{{ onAdd }}" class="-primary m-10" />
+                    <Button row="5" text="Add item" tap="{{ onAdd }}" class="-primary m-10" accessibilityLabel="Add item to track" />
                 </GridLayout>
             </TabViewItem.view>
         </TabViewItem>

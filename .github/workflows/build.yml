@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Typecheck, Test & Bundle
+    name: Lint, Typecheck, Test & Bundle
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +25,9 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - run: npm run lint
       - run: npm run typecheck
+
       - run: npm test
       - name: Bundle Android JS with NativeScript webpack (smoke build)
         run: npm run bundle:android
