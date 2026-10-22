@@ -8,7 +8,7 @@
     "ios": "ns run ios",
     "clean": "ns clean",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint app tests nativescript.config.ts",
+    "lint": "eslint app tests nativescript.config.ts vitest.config.ts",
     "test": "vitest run",
     "bundle:android": "webpack --config webpack.config.js --env android --env production",
     "validate": "npm run lint && npm run typecheck && npm test"
@@ -19,10 +19,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
-    "@nativescript/webpack": "~5.0.0",
+    "@nativescript/webpack": "~5.0.39",
+    "@vitest/coverage-v8": "^4.1.12",
     "eslint": "^9.39.5",
     "typescript": "~5.5.0",
     "typescript-eslint": "^8.71.0",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.12"
+  },
+  "overrides": {
+    "serialize-javascript": "^7.0.5"
   }
 }

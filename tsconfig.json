@@ -11,5 +11,5 @@
     "experimentalDecorators": true,
     "isolatedModules": true
   },
-  "include": ["app/**/*.ts", "tests/**/*.ts", "nativescript.config.ts"]
+  "include": ["app/**/*.ts", "tests/**/*.ts", "nativescript.config.ts", "vitest.config.ts"]
 }

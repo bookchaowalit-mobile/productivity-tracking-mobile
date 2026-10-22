@@ -5,3 +5,4 @@ hooks/
 !webpack.config.js
 !app/app.ts
 .env
+coverage/
